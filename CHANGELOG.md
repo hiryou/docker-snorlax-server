@@ -1,0 +1,1 @@
+Clone from https://github.com/big-data-europe/docker-hadoop, tag=3.2.1
