@@ -1,4 +1,4 @@
-version: "3"
+version: "3.2"
 
 services:
   namenode:
@@ -9,7 +9,13 @@ services:
       - 9870:9870
       - 9000:9000
     volumes:
-      - /home/hadoop/docker/volumes/hadoop_namenode:/hadoop/dfs/name
+      - type: volume
+        source: /home/hadoop/docker/volumes/hadoop_namenode
+        target: /hadoop/dfs/name
+      - type: bind
+        source: /home/hadoop/docker/volumes/host_shared
+        target: /host_shared
+        read_only: true
     environment:
       - CLUSTER_NAME=test
     env_file:
