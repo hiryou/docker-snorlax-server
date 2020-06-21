@@ -3,7 +3,7 @@ version: "3"
 services:
   namenode:
     build: ./namenode
-    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    image: bde2020/hadoop-namenode:master
     container_name: namenode
     ports:
       - 9870:9870
@@ -17,7 +17,7 @@ services:
 
   resourcemanager:
     build: ./resourcemanager
-    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
+    image: bde2020/hadoop-resourcemanager:master
     container_name: resourcemanager
     depends_on:
       - namenode
@@ -32,7 +32,7 @@ services:
 
   historyserver:
     build: ./historyserver
-    image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
+    image: bde2020/hadoop-historyserver:master
     container_name: historyserver
     depends_on:
       - namenode
@@ -47,7 +47,7 @@ services:
 
   nodemanager1:
     build: ./nodemanager
-    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    image: bde2020/hadoop-nodemanager:master
     container_name: nodemanager1
     depends_on:
       - namenode
@@ -60,7 +60,7 @@ services:
 
   datanode1:
     build: ./datanode
-    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    image: bde2020/hadoop-datanode:master
     container_name: datanode1
     depends_on:
       - namenode
@@ -73,7 +73,7 @@ services:
 
   datanode2:
     build: ./datanode
-    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    image: bde2020/hadoop-datanode:master
     container_name: datanode2
     depends_on:
       - namenode
