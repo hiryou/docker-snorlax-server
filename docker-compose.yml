@@ -9,7 +9,7 @@ services:
       - 9870:9870
       - 9000:9000
     volumes:
-      - hadoop_namenode:/home/hadoop/dfs/name
+      - /home/hadoop/docker/volumes/hadoop_namenode:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=test
     env_file:
@@ -41,7 +41,7 @@ services:
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
     volumes:
-      - hadoop_historyserver:/home/hadoop/yarn/timeline
+      - /home/hadoop/docker/volumes/hadoop_historyserver:/hadoop/yarn/timeline
     env_file:
       - ./hadoop.env
 
@@ -65,7 +65,7 @@ services:
     depends_on:
       - namenode
     volumes:
-      - hadoop_datanode1:/home/hadoop/dfs/data
+      - /home/hadoop/docker/volumes/hadoop_datanode1:/hadoop/dfs/data
     environment:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
@@ -78,14 +78,8 @@ services:
     depends_on:
       - namenode
     volumes:
-      - hadoop_datanode2:/home/hadoop/dfs/data
+      - /home/hadoop/docker/volumes/hadoop_datanode2:/hadoop/dfs/data
     environment:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
-  
-volumes:
-  hadoop_namenode:
-  hadoop_datanode1:
-  hadoop_datanode2:
-  hadoop_historyserver:

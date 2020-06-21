@@ -11,6 +11,8 @@ See repository branches for supported hadoop versions
 
 ## Quick Start
 
+There's also a quick tutorial here: [How to set up a Hadoop cluster in Docker](https://clubhouse.io/developer-how-to/how-to-set-up-a-hadoop-cluster-in-docker/)
+
 To deploy an example HDFS cluster, run:
 ```
   docker-compose up
