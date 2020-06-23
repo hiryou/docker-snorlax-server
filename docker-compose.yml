@@ -5,6 +5,7 @@ services:
     build: ./namenode
     image: bde2020/hadoop-namenode:master
     container_name: namenode
+    #hostname: namenode.snorlax.local
     ports:
       - 9870:9870
       - 9000:9000
@@ -28,7 +29,7 @@ services:
     depends_on:
       - namenode
       - datanode1
-      #- datanode2
+      - datanode2
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
     env_file:
@@ -43,7 +44,7 @@ services:
     depends_on:
       - namenode
       - datanode1
-      #- datanode2
+      - datanode2
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
     volumes:
@@ -58,7 +59,7 @@ services:
     depends_on:
       - namenode
       - datanode1
-      #- datanode2
+      - datanode2
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
     env_file:
@@ -79,15 +80,17 @@ services:
     env_file:
       - ./hadoop.env
 
-  #datanode2:
-  #  build: ./datanode
-  #  image: bde2020/hadoop-datanode:master
-  #  container_name: datanode2
-  #  depends_on:
-  #    - namenode
-  #  volumes:
-  #    - /home/hadoop/docker/volumes/hadoop_datanode2:/hadoop/dfs/data
-  #  environment:
-  #    SERVICE_PRECONDITION: "namenode:9870"
-  #  env_file:
-  #    - ./hadoop.env
+  datanode2:
+    build: ./datanode
+    image: bde2020/hadoop-datanode:master
+    container_name: datanode2
+    ports:
+      - 9865:9864
+    depends_on:
+      - namenode
+    volumes:
+      - /home/hadoop/docker/volumes/hadoop_datanode2:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./hadoop.env
