@@ -22,49 +22,6 @@ services:
     env_file:
       - ./hadoop.env
 
-  resourcemanager:
-    build: ./resourcemanager
-    image: bde2020/hadoop-resourcemanager:master
-    container_name: resourcemanager
-    depends_on:
-      - namenode
-      - datanode1
-      - datanode2
-    environment:
-      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
-    env_file:
-      - ./hadoop.env
-    ports:
-      - "8088:8088"
-
-  historyserver:
-    build: ./historyserver
-    image: bde2020/hadoop-historyserver:master
-    container_name: historyserver
-    depends_on:
-      - namenode
-      - datanode1
-      - datanode2
-    environment:
-      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
-    volumes:
-      - /home/hadoop/docker/volumes/hadoop_historyserver:/hadoop/yarn/timeline
-    env_file:
-      - ./hadoop.env
-
-  nodemanager1:
-    build: ./nodemanager
-    image: bde2020/hadoop-nodemanager:master
-    container_name: nodemanager1
-    depends_on:
-      - namenode
-      - datanode1
-      - datanode2
-    environment:
-      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
-    env_file:
-      - ./hadoop.env
-
   datanode1:
     build: ./datanode
     image: bde2020/hadoop-datanode:master
@@ -94,3 +51,46 @@ services:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
+
+  resourcemanager:
+    build: ./resourcemanager
+    image: bde2020/hadoop-resourcemanager:master
+    container_name: resourcemanager
+    depends_on:
+      - namenode
+      - datanode1
+      - datanode2
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
+    env_file:
+      - ./hadoop.env
+    ports:
+      - "8088:8088"
+
+  #historyserver:
+  #  build: ./historyserver
+  #  image: bde2020/hadoop-historyserver:master
+  #  container_name: historyserver
+  #  depends_on:
+  #    - namenode
+  #    - datanode1
+  #    - datanode2
+  #  environment:
+  #    SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+  #  volumes:
+  #    - /home/hadoop/docker/volumes/hadoop_historyserver:/hadoop/yarn/timeline
+  #  env_file:
+  #    - ./hadoop.env
+
+  #nodemanager1:
+  #  build: ./nodemanager
+  #  image: bde2020/hadoop-nodemanager:master
+  #  container_name: nodemanager1
+  #  depends_on:
+  #    - namenode
+  #    - datanode1
+  #    - datanode2
+  #  environment:
+  #    SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+  #  env_file:
+  #    - ./hadoop.env
