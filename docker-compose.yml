@@ -67,20 +67,20 @@ services:
     ports:
       - "8088:8088"
 
-  #historyserver:
-  #  build: ./historyserver
-  #  image: bde2020/hadoop-historyserver:master
-  #  container_name: historyserver
-  #  depends_on:
-  #    - namenode
-  #    - datanode1
-  #    - datanode2
-  #  environment:
-  #    SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
-  #  volumes:
-  #    - /home/hadoop/docker/volumes/hadoop_historyserver:/hadoop/yarn/timeline
-  #  env_file:
-  #    - ./hadoop.env
+  historyserver:
+    build: ./historyserver
+    image: bde2020/hadoop-historyserver:master
+    container_name: historyserver
+    depends_on:
+      - namenode
+      - datanode1
+      - datanode2
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864 resourcemanager:8088"
+    volumes:
+      - /home/hadoop/docker/volumes/hadoop_historyserver:/hadoop/yarn/timeline
+    env_file:
+      - ./hadoop.env
 
   #nodemanager1:
   #  build: ./nodemanager
