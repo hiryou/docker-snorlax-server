@@ -52,9 +52,24 @@ services:
     env_file:
       - ./hadoop.env
 
+  #resourcemanager:
+  #  build: ./resourcemanager
+  #  image: bde2020/hadoop-resourcemanager:master
+  #  container_name: resourcemanager
+  #  depends_on:
+  #    - namenode
+  #    - datanode1
+  #    - datanode2
+  #  environment:
+  #    SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864"
+  #  env_file:
+  #    - ./hadoop.env
+  #  ports:
+  #    - "8088:8088"
+
   resourcemanager:
-    build: ./resourcemanager
-    image: bde2020/hadoop-resourcemanager:master
+    build: ./spark-on-yarn
+    image: bde2020/spark-on-yarn:master
     container_name: resourcemanager
     depends_on:
       - namenode
