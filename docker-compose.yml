@@ -68,19 +68,28 @@ services:
   #    - "8088:8088"
 
   resourcemanager:
-    build: ./spark-on-yarn
-    image: bde2020/spark-on-yarn:master
+    build: ./spark-hive
+    image: bde2020/spark-hive:master
     container_name: resourcemanager
+    env_file:
+      - ./hadoop.env
+      - ./hadoop-hive.env
     depends_on:
       - namenode
       - datanode1
       - datanode2
     environment:
-      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864"
+      HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
+      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864 hive-metastore:9083"
     env_file:
       - ./hadoop.env
     ports:
+      - "10000:10000"
       - "8088:8088"
+    volumes:
+      - type: bind
+        source: /home/hadoop/docker/volumes/host_shared
+        target: /host_shared
 
   historyserver:
     build: ./historyserver
@@ -114,21 +123,21 @@ services:
     ports:
       - "8042:8042"
 
-  hive-server:
-    image: bde2020/hive:2.3.2-postgresql-metastore
-    container_name: hive-server
-    env_file:
-      - ./hadoop.env
-      - ./hadoop-hive.env
-    environment:
-      HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
-      SERVICE_PRECONDITION: "hive-metastore:9083"
-    ports:
-      - "10000:10000"
-    volumes:
-      - type: bind
-        source: /home/hadoop/docker/volumes/host_shared
-        target: /host_shared
+#  hive-server:
+#    image: bde2020/hive:2.3.2-postgresql-metastore
+#    container_name: hive-server
+#    env_file:
+#      - ./hadoop.env
+#      - ./hadoop-hive.env
+#    environment:
+#      HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
+#      SERVICE_PRECONDITION: "hive-metastore:9083"
+#    ports:
+#      - "10000:10000"
+#    volumes:
+#      - type: bind
+#        source: /home/hadoop/docker/volumes/host_shared
+#        target: /host_shared
 
   hive-metastore:
     image: bde2020/hive:2.3.2-postgresql-metastore
