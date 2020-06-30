@@ -1,9 +1,10 @@
 version: "3.2"
 
 services:
+
   namenode:
     build: ./namenode
-    image: bde2020/hadoop-namenode:master
+    image: snorlax/hadoop-namenode:master
     container_name: namenode
     #hostname: namenode.snorlax.local
     ports:
@@ -24,7 +25,7 @@ services:
 
   datanode1:
     build: ./datanode
-    image: bde2020/hadoop-datanode:master
+    image: snorlax/hadoop-datanode:master
     container_name: datanode1
     ports:
       - 9864:9864
@@ -37,133 +38,32 @@ services:
     env_file:
       - ./hadoop.env
 
-  datanode2:
-    build: ./datanode
-    image: bde2020/hadoop-datanode:master
-    container_name: datanode2
-    ports:
-      - 9865:9864
-    depends_on:
-      - namenode
-    volumes:
-      - /home/hadoop/docker/volumes/hadoop_datanode2:/hadoop/dfs/data
-    environment:
-      SERVICE_PRECONDITION: "namenode:9870"
-    env_file:
-      - ./hadoop.env
-
-  #resourcemanager:
-  #  build: ./resourcemanager
-  #  image: bde2020/hadoop-resourcemanager:master
-  #  container_name: resourcemanager
-  #  depends_on:
-  #    - namenode
-  #    - datanode1
-  #    - datanode2
-  #  environment:
-  #    SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864"
-  #  env_file:
-  #    - ./hadoop.env
-  #  ports:
-  #    - "8088:8088"
-
-  resourcemanager:
-    build: ./spark-hive
-    image: bde2020/spark-hive:master
-    container_name: resourcemanager
+  snorlax-master:
+    build: ./snorlax-master
+    image: snorlax/snorlax-master:master
+    container_name: snorlax-master
     env_file:
       - ./hadoop.env
       - ./hadoop-hive.env
-    depends_on:
-      - namenode
-      - datanode1
-      - datanode2
     environment:
       HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
-      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864 hive-metastore:9083"
-    env_file:
-      - ./hadoop.env
+      #SERVICE_PRECONDITION: "hive-metastore:9083"
+      SERVICE_PRECONDITION: "namenode:9870"
     ports:
       - "10000:10000"
-      - "8088:8088"
     volumes:
       - type: bind
         source: /home/hadoop/docker/volumes/host_shared
         target: /host_shared
 
-  historyserver:
-    build: ./historyserver
-    image: bde2020/hadoop-historyserver:master
-    container_name: historyserver
-    depends_on:
-      - namenode
-      - datanode1
-      - datanode2
-    environment:
-      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864 resourcemanager:8088"
-    volumes:
-      - /home/hadoop/docker/volumes/hadoop_historyserver:/hadoop/yarn/timeline
-    env_file:
-      - ./hadoop.env
-    ports:
-      - "8188:8188"
-
-  nodemanager1:
-    build: ./nodemanager
-    image: bde2020/hadoop-nodemanager:master
-    container_name: nodemanager1
-    depends_on:
-      - namenode
-      - datanode1
-      - datanode2
-    environment:
-      SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864 resourcemanager:8088"
-    env_file:
-      - ./hadoop.env
-    ports:
-      - "8042:8042"
-
-#  hive-server:
+#  hive-metastore:
 #    image: bde2020/hive:2.3.2-postgresql-metastore
-#    container_name: hive-server
+#    container_name: hive-metastore
 #    env_file:
 #      - ./hadoop.env
 #      - ./hadoop-hive.env
+#    command: /opt/hive/bin/hive --service metastore
 #    environment:
-#      HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
-#      SERVICE_PRECONDITION: "hive-metastore:9083"
+#      SERVICE_PRECONDITION: "hive-metastore-postgresql:5432"
 #    ports:
-#      - "10000:10000"
-#    volumes:
-#      - type: bind
-#        source: /home/hadoop/docker/volumes/host_shared
-#        target: /host_shared
-
-  hive-metastore:
-    image: bde2020/hive:2.3.2-postgresql-metastore
-    container_name: hive-metastore
-    env_file:
-      - ./hadoop.env
-      - ./hadoop-hive.env
-    command: /opt/hive/bin/hive --service metastore
-    environment:
-      SERVICE_PRECONDITION: "hive-metastore-postgresql:5432"
-    ports:
-      - "9083:9083"
-
-  hive-metastore-postgresql:
-    image: bde2020/hive-metastore-postgresql:2.3.0
-    container_name: hive-metastore-postgresql
-    volumes:
-      #- type: volume
-      #  source: /home/hadoop/docker/volumes/hive-metastore-postgresql
-      #  target: /var/lib/postgresql
-      - type: bind
-        source: /home/hadoop/docker/volumes/host_shared
-        target: /host_shared
-
-  presto-coordinator:
-    image: shawnzhu/prestodb:0.181
-    container_name: presto-coordinator
-    ports:
-      - "8080:8080"
+#      - "9083:9083"

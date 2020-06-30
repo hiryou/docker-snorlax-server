@@ -26,6 +26,7 @@ RUN set -x \
     && gpg --verify /tmp/hadoop.tar.gz.asc \
     && tar -xvf /tmp/hadoop.tar.gz -C /opt/ \
     && mv /opt/hadoop-${HADOOP_VERSION} /opt/hadoop \
+    && mv /opt/hadoop/etc/hadoop/mapred-site.xml.template /opt/hadoop/etc/hadoop/mapred-site.xml \
     && rm /tmp/hadoop.tar.gz*
 
 RUN ln -s /opt/hadoop/etc/hadoop /etc/hadoop
