@@ -8,14 +8,14 @@ services:
     container_name: namenode
     #hostname: namenode.snorlax.local
     ports:
-      - 9870:9870
-      - 9000:9000
+      - 50070:50070
+      - 8020:8020
     volumes:
       - type: volume
         source: /home/hadoop/docker/volumes/hadoop_namenode
         target: /hadoop/dfs/name
       - type: bind
-        source: /home/hadoop/docker/volumes/host_shared
+        source: /home/hadoop/docker/host_shared/hadoop_namenode
         target: /host_shared
         read_only: true
     environment:
@@ -28,13 +28,13 @@ services:
     image: snorlax/hadoop-datanode:master
     container_name: datanode1
     ports:
-      - 9864:9864
+      - 50075:50075
     depends_on:
       - namenode
     volumes:
       - /home/hadoop/docker/volumes/hadoop_datanode1:/hadoop/dfs/data
     environment:
-      SERVICE_PRECONDITION: "namenode:9870"
+      SERVICE_PRECONDITION: "namenode:50070"
     env_file:
       - ./hadoop.env
 
@@ -48,12 +48,12 @@ services:
     environment:
       HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
       #SERVICE_PRECONDITION: "hive-metastore:9083"
-      SERVICE_PRECONDITION: "namenode:9870"
+      SERVICE_PRECONDITION: "namenode:50070"
     ports:
       - "10000:10000"
     volumes:
       - type: bind
-        source: /home/hadoop/docker/volumes/host_shared
+        source: /home/hadoop/docker/host_shared/snorlax-master
         target: /host_shared
 
 #  hive-metastore:
