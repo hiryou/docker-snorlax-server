@@ -36,11 +36,11 @@ ADD conf/llap-daemon-log4j2.properties ${HIVE_HOME}/conf
 COPY startup.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/startup.sh
 
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY entryhive.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entryhive.sh
 
 EXPOSE 10000
 EXPOSE 10002
 
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["entryhive.sh"]
 CMD startup.sh
