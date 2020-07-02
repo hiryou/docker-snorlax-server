@@ -3,9 +3,12 @@ FROM snorlax/hadoop-base:master
 MAINTAINER Long Nguyen <littlefinzer@gmail.com>
 
 ENV HIVE_VERSION 2.3.6
-
 ENV HIVE_HOME /opt/hive
 ENV PATH ${HIVE_HOME}/bin:$PATH
+
+ENV SPARK_VERSION=2.4.5
+ENV SPARK_LONG_VERSION=${SPARK_VERSION}-bin-without-hadoop
+ENV SPARK_DOWNLOAD_URL https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_LONG_VERSION}.tgz
 
 WORKDIR /opt
 
