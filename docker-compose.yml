@@ -37,6 +37,20 @@ services:
     env_file:
       - ./hadoop.env
 
+  resourcemanager:
+    build: ./resourcemanager
+    image: snorlax/resourcemanager:master
+    container_name: resourcemanager
+    depends_on:
+      - namenode
+      - datanode1
+    environment:
+      SERVICE_PRECONDITION: "namenode:8020 namenode:50070 datanode1:50075"
+    env_file:
+      - ./hadoop.env
+    ports:
+      - "8088:8088"
+
   snorlax-master:
     build: ./snorlax-master
     image: snorlax/snorlax-master:master

@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -y wget procps && \
 
 
 #Spark should be compiled with Hive to be able to use it
-#hive-site.xml should be copied to $SPARK_HOME/conf folder
+#hive-site.xml should be copied to ${SPARK_HOME}/conf folder
 
 #Custom configuration goes here
 ADD conf/hive-site.xml ${HIVE_HOME}/conf
