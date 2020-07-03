@@ -9,7 +9,7 @@ ENV SPARK_DOWNLOAD_URL https://archive.apache.org/dist/spark/spark-${SPARK_VERSI
 
 RUN apt-get update \
     && apt-get install -y \
-        python3 \
+        python python3 \
     && curl -fSL "${SPARK_DOWNLOAD_URL}" -o /tmp/spark.tgz \
     #&& curl -fSL "${SPARK_DOWNLOAD_URL}.asc" -o /tmp/spark.tgz.asc \
     #&& gpg --verify /tmp/spark.tgz.asc \

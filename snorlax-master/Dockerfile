@@ -23,6 +23,18 @@ RUN apt-get update && apt-get install -y wget procps && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
 
+WORKDIR /
+RUN apt-get update \
+    && apt-get install -y \
+        python python3 \
+    && curl -fSL "${SPARK_DOWNLOAD_URL}" -o /tmp/spark.tgz \
+    #&& curl -fSL "${SPARK_DOWNLOAD_URL}.asc" -o /tmp/spark.tgz.asc \
+    #&& gpg --verify /tmp/spark.tgz.asc \
+    && tar -xvf /tmp/spark.tgz -C /opt/ \
+    && mv /opt/spark-${SPARK_LONG_VERSION} /opt/spark \
+    && rm /tmp/spark.tgz* \
+    && cd /
+
 
 #Spark should be compiled with Hive to be able to use it
 #hive-site.xml should be copied to ${SPARK_HOME}/conf folder
@@ -35,6 +47,26 @@ ADD conf/hive-exec-log4j2.properties ${HIVE_HOME}/conf
 ADD conf/hive-log4j2.properties ${HIVE_HOME}/conf
 ADD conf/ivysettings.xml ${HIVE_HOME}/conf
 ADD conf/llap-daemon-log4j2.properties ${HIVE_HOME}/conf
+
+# Spark variables
+# See more http://blog.ditullio.fr/2015/10/24/mini-cluster-part-iii-hadoop-spark-installation/#Installing_Spark
+ENV YARN_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+ENV SPARK_HOME=/opt/spark
+ENV USER=root
+ENV PATH ${HIVE_HOME}/bin:${SPARK_HOME}/bin/:$PATH
+
+# Set python to used for pyspark
+ENV PYSPARK_PYTHON="python3"
+
+# Fix exception when doing spark-submit or pyspark: java.lang.NoClassDefFoundError: org/slf4j/Logger
+# https://stackoverflow.com/questions/32547832/error-to-start-pre-built-spark-master-when-slf4j-is-not-installed
+#export SPARK_DIST_CLASSPATH=$(hadoop classpath)
+ENV SPARK_DIST_CLASSPATH="/etc/hadoop:/opt/hadoop/share/hadoop/common/lib/*:/opt/hadoop/share/hadoop/common/*:/opt/hadoop/share/hadoop/hdfs:/opt/hadoop/share/hadoop/hdfs/lib/*:/opt/hadoop/share/hadoop/hdfs/*:/opt/hadoop/share/hadoop/yarn/lib/*:/opt/hadoop/share/hadoop/yarn/*:/opt/hadoop/share/hadoop/mapreduce/lib/*:/opt/hadoop/share/hadoop/mapreduce/*:/usr/lib/jvm/java-8-openjdk-amd64//lib/tools.jar:/opt/hadoop/contrib/capacity-scheduler/*.jar"
+#ENV SPARK_DIST_CLASSPATH=${HIVE_HOME}/lib/:${SPARK_DIST_CLASSPATH}
+
+# Fix the value of PYTHONHASHSEED
+# Note: this is needed when you use Python 3.3 or greater
+ENV PYTHONHASHSEED 1
 
 COPY startup.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/startup.sh

@@ -6,4 +6,7 @@ hadoop fs -chmod g+w   /tmp
 hadoop fs -chmod g+w   /user/hive/warehouse
 
 cd ${HIVE_HOME}/bin
-./hiveserver2 --hiveconf hive.server2.enable.doAs=false
+./hiveserver2 --hiveconf hive.server2.enable.doAs=false && break
+
+# Integrate spark with hive
+cp ${HIVE_HOME}/conf/hive-site.xml ${SPARK_HOME}/conf/
