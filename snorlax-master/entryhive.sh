@@ -31,6 +31,18 @@ function configure() {
     done
 }
 
+function sparkconf() {
+    local file=$1
+    echo ${file}
+
+    if [ -f ${file}.template ] && [ -f ${file}.add ]; then
+        mv ${file}.template ${file}
+        echo $'\n' >> ${file}
+        cat ${file}.add >> ${file}
+        rm ${file}.add
+    fi
+}
+
 configure /etc/hadoop/core-site.xml core CORE_CONF
 configure /etc/hadoop/hdfs-site.xml hdfs HDFS_CONF
 configure /etc/hadoop/yarn-site.xml yarn YARN_CONF
@@ -40,6 +52,7 @@ configure /etc/hadoop/mapred-site.xml mapred MAPRED_CONF
 configure /opt/hive/conf/hive-site.xml hive HIVE_SITE_CONF
 
 configure /opt/spark/conf/hive-site.xml hive HIVE_SITE_CONF
+sparkconf /opt/spark/conf/spark-defaults.conf
 
 if [ "$MULTIHOMED_NETWORK" = "1" ]; then
     echo "Configuring for multihomed network"

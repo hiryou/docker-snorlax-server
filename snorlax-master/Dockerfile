@@ -57,6 +57,8 @@ ENV PATH ${HIVE_HOME}/bin:${SPARK_HOME}/bin/:$PATH
 
 # integrate hive into spark
 ADD conf/hive-site.xml ${SPARK_HOME}/conf
+# add spark configs
+COPY sparkconf/spark-defaults.conf.add ${SPARK_HOME}/conf/
 
 # Set python to used for pyspark
 ENV PYSPARK_PYTHON="python3"

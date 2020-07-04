@@ -1,0 +1,1 @@
+spark.jars.packages org.apache.avro:avro-mapred:1.9.2,org.apache.spark:spark-core_2.11:2.4.5,org.apache.spark:spark-hive_2.11:2.4.5
