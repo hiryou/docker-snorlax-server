@@ -1,4 +1,5 @@
-FROM bde2020/hadoop-base:master
+#FROM bde2020/hadoop-base:master
+FROM snorlax/hadoop-base:master
 
 MAINTAINER Ivan Ermilov <ivan.s.ermilov@gmail.com>
 

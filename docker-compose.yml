@@ -4,7 +4,7 @@ services:
 
   namenode:
     build: ./namenode
-    image: snorlax/hadoop-namenode:master
+    image: snorlax/namenode:master
     container_name: namenode
     #hostname: namenode.snorlax.local
     ports:
@@ -24,7 +24,7 @@ services:
 
   datanode1:
     build: ./datanode
-    image: snorlax/hadoop-datanode:master
+    image: snorlax/datanode:master
     container_name: datanode1
     ports:
       - 50075:50075
@@ -36,6 +36,19 @@ services:
       SERVICE_PRECONDITION: "namenode:50070"
     env_file:
       - ./hadoop.env
+  nodemanager1:
+    build: ./nodemanager
+    image: snorlax/nodemanager:master
+    container_name: nodemanager1
+    depends_on:
+      - namenode
+      - datanode1
+    environment:
+      SERVICE_PRECONDITION: "namenode:8020 datanode1:50075"
+    env_file:
+      - ./hadoop.env
+    ports:
+      - "8042:8042"
 
   resourcemanager:
     build: ./resourcemanager
@@ -45,11 +58,26 @@ services:
       - namenode
       - datanode1
     environment:
-      SERVICE_PRECONDITION: "namenode:8020 namenode:50070 datanode1:50075"
+      SERVICE_PRECONDITION: "namenode:8020 datanode1:50075"
     env_file:
       - ./hadoop.env
     ports:
       - "8088:8088"
+  historyserver:
+    build: ./historyserver
+    image: snorlax/historyserver:master
+    container_name: historyserver
+    depends_on:
+      - namenode
+      - datanode1
+    environment:
+      SERVICE_PRECONDITION: "namenode:8020 datanode1:50075 resourcemanager:8088"
+    volumes:
+      - /home/hadoop/docker/volumes/hadoop_historyserver:/hadoop/yarn/timeline
+    env_file:
+      - ./hadoop.env
+    ports:
+      - "8188:8188"
 
   snorlax-master:
     build: ./snorlax-master
@@ -80,7 +108,6 @@ services:
       SERVICE_PRECONDITION: "hive-metastore-postgresql:5432"
     ports:
       - "9083:9083"
-
   hive-metastore-postgresql:
     image: bde2020/hive-metastore-postgresql:2.3.0
     container_name: hive-metastore-postgresql

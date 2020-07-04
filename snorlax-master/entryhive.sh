@@ -39,6 +39,8 @@ configure /etc/hadoop/kms-site.xml kms KMS_CONF
 configure /etc/hadoop/mapred-site.xml mapred MAPRED_CONF
 configure /opt/hive/conf/hive-site.xml hive HIVE_SITE_CONF
 
+configure /opt/spark/conf/hive-site.xml hive HIVE_SITE_CONF
+
 if [ "$MULTIHOMED_NETWORK" = "1" ]; then
     echo "Configuring for multihomed network"
 
