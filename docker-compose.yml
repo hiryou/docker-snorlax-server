@@ -16,7 +16,7 @@ services:
       #  target: /hadoop/dfs/name
       - /home/hadoop/docker/volumes/hadoop_namenode:/hadoop/dfs/name
       #- type: bind
-      #  source: /home/hadoop/docker/host_shared/hadoop_namenode
+      #  source: /home/raw-data
       #  target: /host_shared
     environment:
       - CLUSTER_NAME=test
@@ -94,7 +94,7 @@ services:
       - "10000:10000"
     volumes:
       - type: bind
-        source: /home/hadoop/docker/host_shared/snorlax-master
+        source: /home/raw-data
         target: /host_shared
 
   hive-metastore:
@@ -117,7 +117,7 @@ services:
       #  source: /home/hadoop/docker/volumes/hive-metastore-postgresql
       #  target: /var/lib/postgresql
       - type: bind
-        source: /home/hadoop/docker/host_shared/hive-metastore-postgresql
+        source: /home/raw-data
         target: /host_shared
 
   presto-coordinator:
