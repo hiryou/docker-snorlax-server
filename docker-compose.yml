@@ -11,12 +11,13 @@ services:
       - 50070:50070
       - 8020:8020
     volumes:
-      - type: volume
-        source: /home/hadoop/docker/volumes/hadoop_namenode
-        target: /hadoop/dfs/name
-      - type: bind
-        source: /home/hadoop/docker/host_shared/hadoop_namenode
-        target: /host_shared
+      #- type: volume
+      #  source: /home/hadoop/docker/volumes/hadoop_namenode
+      #  target: /hadoop/dfs/name
+      - /home/hadoop/docker/volumes/hadoop_namenode:/hadoop/dfs/name
+      #- type: bind
+      #  source: /home/hadoop/docker/host_shared/hadoop_namenode
+      #  target: /host_shared
     environment:
       - CLUSTER_NAME=test
     env_file:
